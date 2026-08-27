@@ -9,6 +9,8 @@ function buildWhatsAppOrderUrl(order) {
     itemsText += `${index + 1}. ${item.productName}${shadeInfo} — Qty ${item.qty} — ₹${item.price * item.qty}\n`;
   });
 
+  const locationText = order.address.locationLink ? `📍 *Google Maps Location:* ${order.address.locationLink}\n` : '';
+
   const message = 
 `🛍️ *GlowKart Order*
 Order ID: *${order.orderId}*
@@ -28,12 +30,11 @@ House/Flat: ${order.address.house}
 Area/Street: ${order.address.area}
 Landmark: ${order.address.landmark || 'N/A'}
 Pincode: ${order.address.pincode || '412208'} (Shikrapur)
-
+${locationText}
 📝 *Order Notes:*
 ${order.orderNotes || 'None'}
 
-Please confirm my order & send UPI payment details.
-(I will share my live location next!)`;
+Please confirm my order & send UPI payment details. Thank you! 💕`;
 
   const encodedMessage = encodeURIComponent(message);
   return `https://api.whatsapp.com/send?phone=${GLOWKART_WHATSAPP_NUMBER}&text=${encodedMessage}`;

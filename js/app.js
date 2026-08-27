@@ -12,15 +12,7 @@ let deferredPwaPrompt = null;
 document.addEventListener('DOMContentLoaded', () => {
   initApp();
   initPwaListeners();
-  hideSplashScreen();
 });
-
-function hideSplashScreen() {
-  setTimeout(() => {
-    const splash = document.getElementById('app-splash-screen');
-    if (splash) splash.classList.add('hide');
-  }, 1400);
-}
 
 function initApp() {
   updateBadges();
@@ -100,10 +92,12 @@ function bindGlobalEvents() {
   const wishlistHeaderBtn = document.getElementById('wishlist-btn');
   const notifBtn = document.getElementById('notif-btn');
   const cartBtn = document.getElementById('cart-btn');
+  const accountHeaderBtn = document.getElementById('account-btn');
 
   if (wishlistHeaderBtn) wishlistHeaderBtn.addEventListener('click', () => navigateTo('wishlist'));
   if (notifBtn) notifBtn.addEventListener('click', () => navigateTo('notifications'));
   if (cartBtn) cartBtn.addEventListener('click', () => navigateTo('cart'));
+  if (accountHeaderBtn) accountHeaderBtn.addEventListener('click', () => navigateTo('account'));
 
   // Desktop Search Input
   const desktopSearchInput = document.getElementById('desktop-search-input');
@@ -276,7 +270,7 @@ function renderHomeView(container) {
   const bestSellers = products.filter(p => p.bestseller);
 
   container.innerHTML = `
-    <!-- Mobile Search Bar Container (Matching Image 2 Reference) -->
+    <!-- Mobile Search Bar Container -->
     <div class="search-container" style="padding: 12px 16px 4px;">
       <div class="search-box">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -610,7 +604,7 @@ function renderSearchViewResultsOnly(query) {
   }
 }
 
-/* 5. PRODUCT DETAILS VIEW */
+/* 5. PRODUCT DETAILS VIEW (With Bottom Padding Fix for Floating Nav) */
 function renderProductDetailsView(container, productId) {
   const product = gkStore.getProductById(productId);
   if (!product) {
@@ -627,7 +621,7 @@ function renderProductDetailsView(container, productId) {
   const isWishlisted = wishlist.includes(product.id);
 
   container.innerHTML = `
-    <div style="background: var(--gk-white); padding-bottom: 24px; border-radius: var(--radius-lg);">
+    <div style="background: var(--gk-white); padding-bottom: 120px; border-radius: var(--radius-lg);">
       <!-- Header Bar -->
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
         <button class="header-btn" onclick="history.back() || navigateTo('home')">‹</button>
@@ -691,7 +685,7 @@ function renderProductDetailsView(container, productId) {
         </div>
 
         <!-- Description -->
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 24px;">
           <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 6px;">Description</h4>
           <p style="font-size: 12px; color: var(--gk-dark-muted); line-height: 1.6;">${product.description}</p>
         </div>
@@ -829,7 +823,7 @@ function removeItemFromCart(productId, shade) {
   renderView('cart');
 }
 
-/* 7. CHECKOUT VIEW */
+/* 7. CHECKOUT VIEW (With Google Maps Location Link Input) */
 function renderCheckoutView(container) {
   const cart = gkStore.getCart();
   const products = gkStore.getProducts();
@@ -924,9 +918,25 @@ function renderCheckoutView(container) {
           <label>Pincode *</label>
           <input type="text" id="co-pincode" class="form-control" value="412208" readonly style="background:#F9FAFB; color: var(--gk-dark); font-weight: 700;" />
         </div>
+      </div>
 
-        <div style="font-size: 11px; color: var(--gk-dark); background: #FFF0F5; padding: 10px 14px; border-radius: var(--radius-md); border: 1px dashed var(--gk-pink-primary); display: flex; align-items: center; gap: 6px;">
-          <span>📍</span> <strong>Note:</strong> After placing your order, please share your location on WhatsApp.
+      <!-- 2.5. Google Maps Location Link (Optional Section) -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <div class="checkout-card-title">
+            <div class="checkout-card-icon">🗺️</div>
+            <span>Google Maps Location Link (Optional)</span>
+          </div>
+          <button class="btn btn-outline" style="width: auto; padding: 4px 12px; font-size: 11px; border-color: var(--gk-pink-primary); color: var(--gk-pink-primary);" onclick="autoDetectLocation()">📍 Detect My Location</button>
+        </div>
+
+        <div class="form-group">
+          <label>Location Link or Coordinates</label>
+          <div class="input-with-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <input type="url" id="co-location-link" class="form-control" value="${address.locationLink || ''}" placeholder="e.g. https://maps.google.com/?q=... or tap Detect" />
+          </div>
+          <div style="font-size: 10px; color: var(--gk-dark-muted); margin-top: 4px;">Helps our delivery agent navigate straight to your location in Shikrapur!</div>
         </div>
       </div>
 
@@ -1012,6 +1022,27 @@ function renderCheckoutView(container) {
   `;
 }
 
+function autoDetectLocation() {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser!");
+    return;
+  }
+  showToast("Detecting your location...");
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+      const input = document.getElementById('co-location-link');
+      if (input) input.value = mapsUrl;
+      showToast("Location detected! 📍");
+    },
+    (err) => {
+      alert("Unable to detect location. Please grant location permission or paste Google Maps link manually.");
+    }
+  );
+}
+
 function processPlaceOrder() {
   const name = document.getElementById('co-name').value.trim();
   const phone = document.getElementById('co-phone').value.trim();
@@ -1020,13 +1051,14 @@ function processPlaceOrder() {
   const landmark = document.getElementById('co-landmark').value.trim();
   const pincode = document.getElementById('co-pincode').value.trim();
   const notes = document.getElementById('co-notes').value.trim();
+  const locationLink = document.getElementById('co-location-link') ? document.getElementById('co-location-link').value.trim() : '';
 
   if (!name || !phone || !house || !area) {
     alert("Please fill in your Name, Phone, and Address details!");
     return;
   }
 
-  const addressObj = { fullName: name, whatsapp: phone, house, area, landmark, pincode, city: 'Shikrapur' };
+  const addressObj = { fullName: name, whatsapp: phone, house, area, landmark, pincode, locationLink, city: 'Shikrapur' };
   gkStore.saveAddress(addressObj);
 
   const cart = gkStore.getCart();
@@ -1063,13 +1095,8 @@ function processPlaceOrder() {
 
   const waUrl = buildWhatsAppOrderUrl(newOrder);
 
-  // Navigate to Order Success View
-  navigateTo('order-success', { order: newOrder });
-
-  // Direct 100% reliable WhatsApp Redirection
-  setTimeout(() => {
-    window.location.href = waUrl;
-  }, 400);
+  // Direct Redirection to WhatsApp
+  window.location.href = waUrl;
 }
 
 /* 8. ORDER SUCCESS VIEW */
@@ -1103,7 +1130,7 @@ function renderOrderSuccessView(container, order) {
       </div>
 
       <div style="background: var(--gk-pink-soft); border-radius: var(--radius-md); padding: 14px; border: 1px dashed var(--gk-pink-primary); font-size: 12px; color: var(--gk-dark); margin-bottom: 20px; text-align: left;">
-        💬 <strong>Next Step:</strong> Send your pre-filled message & share your location on WhatsApp. We will send payment UPI details shortly.
+        💬 <strong>Next Step:</strong> Send your pre-filled message on WhatsApp. We will send payment UPI details shortly.
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -1147,7 +1174,7 @@ function renderOrdersView(container) {
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px solid var(--gk-gray-border); padding-top: 10px;">
                 <span style="font-size: 14px; font-weight: 800;">Total: ₹${o.totals.total}</span>
-                <button class="btn btn-whatsapp" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="window.location.href='${buildWhatsAppOrderUrl(o)}'">WhatsApp Chat</button>
+                <button class="btn btn-whatsapp" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="window.location.href='${buildWhatsAppOrderUrl(o)}'">WhatsApp Chat 💬</button>
               </div>
             </div>
           `).join('')}
@@ -1322,7 +1349,7 @@ function renderMyGlowkartView(container) {
           <span style="font-size: 16px; color: var(--gk-pink-primary); font-weight: 800;">›</span>
         </div>
 
-        <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid #F0E6EA; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition-fast);" onclick="window.open('${buildSupportWhatsAppUrl()}', '_blank')">
+        <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid #F0E6EA; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition-fast);" onclick="window.open('https://api.whatsapp.com/send?phone=919561762651', '_blank')">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 34px; height: 34px; border-radius: var(--radius-full); background: #E6F4EA; color: #10B981; display: flex; align-items: center; justify-content: center; font-size: 15px;">🟢</div>
             <div>
