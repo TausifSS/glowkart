@@ -8,23 +8,12 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FF2E93">
 
-  <!-- CSS Stylesheets (Cache Busted v1.0.5) -->
-  <link rel="stylesheet" href="css/variables.css?v=1.0.5">
-  <link rel="stylesheet" href="css/main.css?v=1.0.5">
-  <link rel="stylesheet" href="css/components.css?v=1.0.5">
+  <!-- CSS Stylesheets (Cache Busted v1.0.6) -->
+  <link rel="stylesheet" href="css/variables.css?v=1.0.6">
+  <link rel="stylesheet" href="css/main.css?v=1.0.6">
+  <link rel="stylesheet" href="css/components.css?v=1.0.6">
 </head>
 <body>
-  
-  <!-- App Loading Splash Screen (Matching Reference Image 3) -->
-  <div id="app-splash-screen" class="splash-screen">
-    <div class="splash-content">
-      <img src="assets/splash_logo.png" class="splash-logo" alt="GlowKart — Beauty Delivered to Shikrapur" />
-      <div class="splash-text">Loading your glow... 💕</div>
-      <div class="splash-progress-bar">
-        <div class="splash-progress-fill"></div>
-      </div>
-    </div>
-  </div>
 
   <!-- Top PWA App Download Banner for First-Time Visitors -->
   <div id="pwa-install-banner" style="display: none; background: linear-gradient(90deg, #FF2E93 0%, #FF4DA6 100%); color: white; padding: 10px 16px; font-size: 12px; font-weight: 700; align-items: center; justify-content: space-between; gap: 12px;">
@@ -258,11 +247,11 @@
     </aside>
   </div>
 
-  <!-- JavaScript Files (Cache Busted v1.0.5) -->
-  <script src="js/data.js?v=1.0.5"></script>
-  <script src="js/store.js?v=1.0.5"></script>
-  <script src="js/whatsapp.js?v=1.0.5"></script>
-  <script src="js/app.js?v=1.0.5"></script>
+  <!-- JavaScript Files (Cache Busted v1.0.6) -->
+  <script src="js/data.js?v=1.0.6"></script>
+  <script src="js/store.js?v=1.0.6"></script>
+  <script src="js/whatsapp.js?v=1.0.6"></script>
+  <script src="js/app.js?v=1.0.6"></script>
 
   <!-- PWA Service Worker Registration with Immediate Update -->
   <script>
@@ -271,7 +260,7 @@
         navigator.serviceWorker.register('sw.js')
           .then(reg => {
             console.log('PWA ServiceWorker registered successfully');
-            reg.update(); // Force immediate check for new Service Worker update
+            reg.update();
           })
           .catch(err => console.log('PWA ServiceWorker registration failed:', err));
       });

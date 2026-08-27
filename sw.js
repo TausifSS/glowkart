@@ -1,6 +1,6 @@
-/* GlowKart Service Worker v1.0.5 */
+/* GlowKart Service Worker v1.0.6 */
 
-const CACHE_NAME = 'glowkart-v1.0.5';
+const CACHE_NAME = 'glowkart-v1.0.6';
 const ASSETS = [
   './',
   './index.html',
@@ -16,7 +16,6 @@ const ASSETS = [
   './manifest.json',
   './assets/logo.png',
   './assets/logo_badge.png',
-  './assets/splash_logo.png',
   './assets/mascot_glowgirl.png'
 ];
 
