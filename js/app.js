@@ -604,7 +604,7 @@ function renderSearchViewResultsOnly(query) {
   }
 }
 
-/* 5. PRODUCT DETAILS VIEW (With Bottom Padding Fix for Floating Nav) */
+/* 5. PRODUCT DETAILS VIEW */
 function renderProductDetailsView(container, productId) {
   const product = gkStore.getProductById(productId);
   if (!product) {
@@ -823,7 +823,7 @@ function removeItemFromCart(productId, shade) {
   renderView('cart');
 }
 
-/* 7. CHECKOUT VIEW (Pink Button, No Extra Arrow, Direct WhatsApp Launch) */
+/* 7. CHECKOUT VIEW */
 function renderCheckoutView(container) {
   const cart = gkStore.getCart();
   const products = gkStore.getProducts();
@@ -983,14 +983,14 @@ function renderCheckoutView(container) {
         </div>
       </div>
 
-      <!-- Primary Action Button (PINK, NO EXTRA ARROW, DIRECT WHATSAPP LAUNCH) -->
+      <!-- Primary Action Button (Directly Triggers WhatsApp Chat Navigation) -->
       <button class="btn btn-primary" style="padding: 16px 20px; font-size: 15px; background: var(--gk-pink-gradient); box-shadow: var(--shadow-pink);" onclick="processPlaceOrder()">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         <span>Place Order on WhatsApp</span>
       </button>
       
       <div style="text-align: center; font-size: 11px; color: var(--gk-dark-muted); margin: 10px 0 24px; display: flex; align-items: center; justify-content: center; gap: 4px;">
-        <span>🛡️</span> You will be redirected to WhatsApp to confirm your order
+        <span>🛡️</span> Clicking above will immediately open WhatsApp chat with your pre-filled order!
       </div>
 
       <!-- Bottom Trust Feature Bar (4 Columns) -->
@@ -1042,15 +1042,25 @@ function autoDetectLocation() {
   );
 }
 
+/* 100% Direct WhatsApp Order Placement & Chat Launch */
 function processPlaceOrder() {
-  const name = document.getElementById('co-name').value.trim();
-  const phone = document.getElementById('co-phone').value.trim();
-  const house = document.getElementById('co-house').value.trim();
-  const area = document.getElementById('co-area').value.trim();
-  const landmark = document.getElementById('co-landmark').value.trim();
-  const pincode = document.getElementById('co-pincode').value.trim();
-  const notes = document.getElementById('co-notes').value.trim();
-  const locationLink = document.getElementById('co-location-link') ? document.getElementById('co-location-link').value.trim() : '';
+  const nameInput = document.getElementById('co-name');
+  const phoneInput = document.getElementById('co-phone');
+  const houseInput = document.getElementById('co-house');
+  const areaInput = document.getElementById('co-area');
+  const landmarkInput = document.getElementById('co-landmark');
+  const pincodeInput = document.getElementById('co-pincode');
+  const notesInput = document.getElementById('co-notes');
+  const locInput = document.getElementById('co-location-link');
+
+  const name = nameInput ? nameInput.value.trim() : '';
+  const phone = phoneInput ? phoneInput.value.trim() : '';
+  const house = houseInput ? houseInput.value.trim() : '';
+  const area = areaInput ? areaInput.value.trim() : '';
+  const landmark = landmarkInput ? landmarkInput.value.trim() : '';
+  const pincode = pincodeInput ? pincodeInput.value.trim() : '412208';
+  const notes = notesInput ? notesInput.value.trim() : '';
+  const locationLink = locInput ? locInput.value.trim() : '';
 
   if (!name || !phone || !house || !area) {
     alert("Please fill in your Name, WhatsApp Phone Number, and Address details!");
@@ -1059,7 +1069,6 @@ function processPlaceOrder() {
 
   if (!locationLink) {
     alert("Please provide your Google Maps location link or click 'Detect My Location' (Required)!");
-    const locInput = document.getElementById('co-location-link');
     if (locInput) locInput.focus();
     return;
   }
@@ -1070,6 +1079,12 @@ function processPlaceOrder() {
   const cart = gkStore.getCart();
   const products = gkStore.getProducts();
   const totals = gkStore.getCartTotal();
+
+  if (!cart || cart.length === 0) {
+    alert("Your cart is empty!");
+    navigateTo('home');
+    return;
+  }
 
   const itemsFormatted = cart.map(c => {
     const p = products.find(prod => prod.id === c.productId);
@@ -1082,6 +1097,7 @@ function processPlaceOrder() {
     };
   });
 
+  // 1. Save Order to History & Notifications
   const newOrder = gkStore.addOrder({
     items: itemsFormatted,
     totals,
@@ -1089,19 +1105,20 @@ function processPlaceOrder() {
     orderNotes: notes
   });
 
-  // Create real order notification!
   gkStore.addNotification({
     title: 'Order Confirmed 🎉',
     message: `Your order #${newOrder.orderId} of ₹${newOrder.totals.total} was sent to WhatsApp.`,
     icon: '📦'
   });
 
-  // Clear cart
+  // 2. Clear Cart
   gkStore.clearCart();
+  updateBadges();
 
+  // 3. Build WhatsApp URL
   const waUrl = buildWhatsAppOrderUrl(newOrder);
 
-  // DIRECT WHATSAPP CHAT REDIRECTION (Same exact reliable method as Orders page!)
+  // 4. IMMEDIATELY REDIRECT TO WHATSAPP CHAT (DO NOT NAVIGATE TO ORDERS VIEW!)
   window.location.href = waUrl;
 }
 
