@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 160" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gkPinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2E93" />
+      <stop offset="50%" stop-color="#FF4DA6" />
+      <stop offset="100%" stop-color="#FF69B4" />
+    </linearGradient>
+    <filter id="glowDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#FF4DA6" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#glowDrop)">
+    <!-- Sparkles above 'G' -->
+    <path d="M75 22 L78 30 L86 33 L78 36 L75 44 L72 36 L64 33 L72 30 Z" fill="#FF4DA6"/>
+    <path d="M102 12 L104 18 L110 20 L104 22 L102 28 L100 22 L94 20 L100 18 Z" fill="#FF4DA6" opacity="0.85"/>
+    <path d="M120 28 L121 32 L125 33 L121 34 L120 38 L119 34 L115 33 L119 32 Z" fill="#FF69B4" opacity="0.7"/>
+
+    <!-- Glow Letter 'G' styled -->
+    <path d="M 62 100 C 40 100 28 82 28 58 C 28 34 44 20 72 20 C 88 20 100 26 106 34 L 92 46 C 88 40 80 36 72 36 C 58 36 48 45 48 58 C 48 72 56 82 72 82 C 82 82 90 77 94 70 L 94 65 L 75 65 L 75 52 L 110 52 L 110 76 C 100 92 84 100 62 100 Z" fill="url(#gkPinkGrad)" />
+
+    <!-- 'l' -->
+    <path d="M 116 18 L 132 18 L 132 96 L 116 96 Z" fill="url(#gkPinkGrad)" />
+
+    <!-- 'o' styled as Woman's Profile Silhouette with Crown -->
+    <g transform="translate(136, 32)">
+      <circle cx="28" cy="34" r="28" fill="url(#gkPinkGrad)" />
+      <!-- Crown on top of O -->
+      <path d="M 12 4 L 18 14 L 28 2 L 38 14 L 44 4 L 40 20 L 16 20 Z" fill="#FF4DA6"/>
+      <circle cx="12" cy="3" r="2" fill="#FFFFFF"/>
+      <circle cx="28" cy="1" r="2.5" fill="#FFFFFF"/>
+      <circle cx="44" cy="3" r="2" fill="#FFFFFF"/>
+      <!-- White female silhouette inside -->
+      <path d="M 28 14 C 22 14 18 19 18 25 C 18 31 22 34 22 38 C 22 43 18 47 16 50 C 21 51 27 50 31 46 C 35 42 36 38 35 34 C 37 32 39 29 38 25 C 37 20 33 14 28 14 Z" fill="#FFFFFF"/>
+    </g>
+
+    <!-- 'w' -->
+    <path d="M 198 42 L 210 42 L 218 78 L 228 42 L 240 42 L 250 78 L 258 42 L 270 42 L 258 96 L 244 96 L 234 62 L 224 96 L 210 96 Z" fill="url(#gkPinkGrad)" />
+
+    <!-- 'Kart' in bold dark slate script style -->
+    <!-- K -->
+    <path d="M 276 22 L 294 22 L 294 52 L 318 22 L 342 22 L 312 56 L 346 96 L 324 96 L 299 64 L 294 70 L 294 96 L 276 96 Z" fill="#1A1A1A" />
+    <!-- a -->
+    <path d="M 364 42 C 376 42 384 49 384 60 L 384 96 L 368 96 L 368 87 C 363 93 355 98 344 98 C 332 98 324 90 324 79 C 324 67 334 60 354 60 L 368 60 L 368 56 C 368 50 362 46 352 46 C 344 46 337 49 333 53 L 326 42 C 334 35 346 32 364 42 Z M 368 70 L 356 70 C 346 70 340 73 340 79 C 340 84 345 87 352 87 C 362 87 368 81 368 73 Z" fill="#1A1A1A" opacity="0.95"/>
+    <!-- r -->
+    <path d="M 390 44 L 406 44 L 406 55 C 411 47 418 43 428 43 L 430 58 C 421 58 412 63 406 72 L 406 96 L 390 96 Z" fill="#1A1A1A" />
+    <!-- t with tail curve -->
+    <path d="M 436 28 L 452 28 L 452 44 L 466 44 L 466 56 L 452 56 L 452 82 C 452 87 455 90 461 90 C 466 90 470 88 474 85 L 478 97 C 471 101 463 103 454 103 C 441 103 436 95 436 80 L 436 56 L 426 56 L 426 44 L 436 44 Z" fill="#1A1A1A" />
+
+    <!-- Shopping Bag Icon on the right with Heart -->
+    <g transform="translate(400, 8)">
+      <!-- Bag Handle -->
+      <path d="M 35 15 C 35 4, 55 4, 55 15" fill="none" stroke="#FF2E93" stroke-width="4.5" stroke-linecap="round" />
+      <!-- Bag Body -->
+      <path d="M 24 16 L 66 16 C 69 16 71 18 72 21 L 78 68 C 79 72 76 76 72 76 L 18 76 C 14 76 11 72 12 68 L 18 21 C 19 18 21 16 24 16 Z" fill="url(#gkPinkGrad)" />
+      <!-- Folded bag top outline -->
+      <path d="M 18 22 L 72 22" stroke="#FF85C0" stroke-width="2" />
+      <!-- White Heart on Bag -->
+      <path d="M 45 42 C 45 37, 37 34, 34 40 C 31 34, 23 37, 23 42 C 23 50, 34 56, 34 56 C 34 56, 45 50, 45 42 Z" fill="#FFFFFF" transform="translate(11, -3)" />
+    </g>
+
+    <!-- Bottom Decorative Swash with Heart -->
+    <path d="M 70 114 Q 240 135 470 120 C 475 119 480 122 475 125 C 240 144 65 122 65 116 Z" fill="url(#gkPinkGrad)"/>
+    <path d="M 250 127 C 250 123, 244 121, 242 125 C 240 121, 234 123, 234 127 C 234 133, 242 137, 242 137 C 242 137, 250 133, 250 127 Z" fill="#FF4DA6"/>
+
+    <!-- Tagline Text -->
+    <text x="250" y="152" font-family="'Plus Jakarta Sans', 'Montserrat', system-ui, sans-serif" font-weight="700" font-size="14" fill="#1A1A1A" text-anchor="middle" letter-spacing="1.2">Beauty Delivered to Shikrapur</text>
+  </g>
+</svg>

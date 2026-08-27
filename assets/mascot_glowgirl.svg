@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="100%" height="100%">
+  <defs>
+    <linearGradient id="mascotBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0F5"/>
+      <stop offset="100%" stop-color="#FFE4E1"/>
+    </linearGradient>
+    <linearGradient id="glowBagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2E93"/>
+      <stop offset="100%" stop-color="#FF4DA6"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#FF4DA6" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <!-- Glow Backdrop Circle -->
+    <circle cx="160" cy="160" r="145" fill="url(#mascotBgGrad)"/>
+    <circle cx="160" cy="160" r="145" fill="none" stroke="#FFB6D5" stroke-width="3" stroke-dasharray="6,4"/>
+
+    <!-- Sparkles -->
+    <path d="M 50 80 L 53 90 L 63 93 L 53 96 L 50 106 L 47 96 L 37 93 L 47 90 Z" fill="#FF4DA6"/>
+    <path d="M 270 90 L 272 96 L 278 98 L 272 100 L 270 106 L 268 100 L 262 98 L 268 96 Z" fill="#FF69B4"/>
+    <path d="M 250 220 L 252 225 L 257 227 L 252 229 L 250 234 L 248 229 L 243 227 L 248 225 Z" fill="#FF4DA6"/>
+
+    <!-- Hair Back (Long Wavy Brown) -->
+    <path d="M 90 120 C 70 160, 75 240, 100 270 C 110 240, 105 180, 115 150 Z" fill="#5C3A21"/>
+    <path d="M 230 120 C 250 160, 245 240, 220 270 C 210 240, 215 180, 205 150 Z" fill="#5C3A21"/>
+
+    <!-- Face & Neck -->
+    <path d="M 120 130 Q 160 200 200 130 C 210 100, 110 100, 120 130 Z" fill="#FFE0BD"/>
+    <rect x="150" y="160" width="20" height="25" rx="5" fill="#FAD0C4"/>
+
+    <!-- Cute Eyes (Winking Left Eye, Open Right Eye) -->
+    <!-- Winking Eye -->
+    <path d="M 132 138 Q 142 128 150 140" fill="none" stroke="#2C1810" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Open Right Eye -->
+    <circle cx="178" cy="136" r="11" fill="#2C1810"/>
+    <circle cx="175" cy="132" r="4" fill="#FFFFFF"/>
+    <circle cx="182" cy="140" r="2" fill="#FFFFFF"/>
+
+    <!-- Eyebrows -->
+    <path d="M 128 126 Q 140 120 150 127" fill="none" stroke="#5C3A21" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 170 127 Q 180 120 192 126" fill="none" stroke="#5C3A21" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Cheeks Blush -->
+    <ellipse cx="132" cy="148" rx="8" ry="5" fill="#FF85C0" opacity="0.6"/>
+    <ellipse cx="188" cy="148" rx="8" ry="5" fill="#FF85C0" opacity="0.6"/>
+
+    <!-- Smile -->
+    <path d="M 152 154 Q 160 164 168 154" fill="none" stroke="#D9381E" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Hair Bangs & Headband -->
+    <!-- Polka Dot Pink Headband -->
+    <path d="M 108 105 Q 160 85 212 105 C 218 115, 102 115, 108 105 Z" fill="#FF4DA6"/>
+    <circle cx="130" cy="100" r="3" fill="#FFFFFF"/>
+    <circle cx="160" cy="95" r="3" fill="#FFFFFF"/>
+    <circle cx="190" cy="100" r="3" fill="#FFFFFF"/>
+
+    <!-- Headband Bow -->
+    <path d="M 145 88 C 130 75, 130 95, 155 92 Z" fill="#FF4DA6"/>
+    <path d="M 175 88 C 190 75, 190 95, 165 92 Z" fill="#FF4DA6"/>
+    <circle cx="160" cy="90" r="6" fill="#FF2E93"/>
+
+    <!-- Top Hair Bangs -->
+    <path d="M 115 110 Q 140 130 155 118 Q 170 130 205 110 C 180 95, 140 95, 115 110 Z" fill="#4A2E1B"/>
+
+    <!-- Dress / Top (Pink Top) -->
+    <path d="M 125 180 L 195 180 L 210 240 L 110 240 Z" fill="#FF69B4"/>
+    <!-- Overalls / Apron -->
+    <path d="M 135 190 L 185 190 L 190 260 L 130 260 Z" fill="#FF2E93"/>
+    <text x="160" y="222" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="11" fill="#FFFFFF" text-anchor="middle">GlowKart</text>
+
+    <!-- Hand holding Shopping Bag -->
+    <g transform="translate(190, 180)">
+      <!-- Arm -->
+      <path d="M 0 10 Q 30 20 40 40" fill="none" stroke="#FFE0BD" stroke-width="12" stroke-linecap="round"/>
+      <!-- Shopping Bag -->
+      <g transform="translate(25, 30) scale(0.75)">
+        <path d="M 15 5 C 15 -2, 35 -2, 35 5" fill="none" stroke="#FF2E93" stroke-width="4" />
+        <rect x="5" y="6" width="40" height="48" rx="6" fill="url(#glowBagGrad)" />
+        <text x="25" y="32" font-family="sans-serif" font-weight="bold" font-size="10" fill="#FFFFFF" text-anchor="middle">Glow</text>
+        <path d="M 25 38 C 25 35, 20 33, 18 36 C 16 33, 11 35, 11 38 C 11 43, 18 47, 18 47 C 18 47, 25 43, 25 38 Z" fill="#FFFFFF" transform="translate(7, 2) scale(0.7)"/>
+      </g>
+    </g>
+
+    <!-- Hand holding Lipstick -->
+    <g transform="translate(90, 175)">
+      <path d="M 30 15 Q 0 30 -10 50" fill="none" stroke="#FFE0BD" stroke-width="12" stroke-linecap="round"/>
+      <!-- Lipstick -->
+      <rect x="-22" y="30" width="12" height="25" rx="2" fill="#1A1A1A"/>
+      <path d="M -20 30 L -12 20 L -12 30 Z" fill="#FF2E93"/>
+    </g>
+  </g>
+</svg>

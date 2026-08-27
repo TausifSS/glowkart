@@ -1,0 +1,51 @@
+/* GlowKart Brand Design Tokens */
+:root {
+  /* Brand Color Palette */
+  --gk-pink-primary: #FF4DA6;
+  --gk-pink-dark: #FF2E93;
+  --gk-pink-light: #FFB6D5;
+  --gk-pink-soft: #FFF0F5;
+  --gk-pink-ultra-light: #FFF8FA;
+  
+  --gk-lavender: #D9B3FF;
+  --gk-lavender-soft: #F3E8FF;
+
+  --gk-dark: #1A1A1A;
+  --gk-dark-muted: #4A4A4A;
+  --gk-gray-light: #F4F4F6;
+  --gk-gray-border: #E8E8EC;
+  --gk-white: #FFFFFF;
+
+  /* Status Colors */
+  --gk-green: #10B981;
+  --gk-green-light: #E6F4EA;
+  --gk-amber: #F59E0B;
+  --gk-amber-light: #FEF3C7;
+  --gk-red: #EF4444;
+  --gk-red-light: #FEE2E2;
+
+  /* Typography */
+  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --shadow-pink: 0 8px 24px rgba(255, 77, 166, 0.22);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+
+  /* Border Radii */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout Constraints */
+  --app-max-width: 480px;
+  --bottom-nav-height: 68px;
+  --header-height: 64px;
+}

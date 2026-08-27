@@ -1,0 +1,58 @@
+/* GlowKart WhatsApp Helper & Pre-Formatter */
+
+const GLOWKART_WHATSAPP_NUMBER = "919876543210"; // Default store owner contact
+
+function buildWhatsAppOrderUrl(order) {
+  let itemsText = "";
+  order.items.forEach((item, index) => {
+    const shadeInfo = item.shade ? ` (${item.shade})` : "";
+    itemsText += `${index + 1}. ${item.productName}${shadeInfo} — Qty ${item.qty} — ₹${item.price * item.qty}\n`;
+  });
+
+  const message = 
+`🛍️ *GlowKart Order*
+Order ID: *${order.orderId}*
+
+👤 *Customer Details:*
+Name: ${order.address.fullName}
+WhatsApp: ${order.address.whatsapp}
+
+💅 *Products:*
+${itemsText}
+Subtotal: ₹${order.totals.subtotal}
+Delivery Charge: ₹${order.totals.deliveryFee} (${order.totals.deliveryFee === 0 ? 'FREE Delivery' : 'Shikrapur Local'})
+*Total Amount: ₹${order.totals.total}*
+
+📍 *Delivery Address:*
+House/Flat: ${order.address.house}
+Area/Street: ${order.address.area}
+Landmark: ${order.address.landmark || 'N/A'}
+Pincode: ${order.address.pincode || '412208'} (Shikrapur)
+
+📝 *Order Notes:*
+${order.orderNotes || 'None'}
+
+Please confirm my order & send UPI payment details.
+(I will share my live location next!)`;
+
+  const encodedMessage = encodeURIComponent(message);
+  return `https://wa.me/${GLOWKART_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+}
+
+function buildProductRequestUrl(productQuery) {
+  const message = 
+`Hi GlowKart! ✨
+
+I am looking for this beauty product:
+*"${productQuery}"*
+
+Could you please check if it is available for delivery in Shikrapur? Thank you!`;
+
+  const encodedMessage = encodeURIComponent(message);
+  return `https://wa.me/${GLOWKART_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+}
+
+function buildSupportWhatsAppUrl() {
+  const message = `Hi GlowKart Team! I need help with my beauty order in Shikrapur. 💕`;
+  return `https://wa.me/${GLOWKART_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
