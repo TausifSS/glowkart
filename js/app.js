@@ -1074,7 +1074,6 @@ function processPlaceOrder() {
   }
 
   const addressObj = { fullName: name, whatsapp: phone, house, area, landmark, pincode, locationLink, city: 'Shikrapur' };
-  gkStore.saveAddress(addressObj);
 
   const cart = gkStore.getCart();
   const products = gkStore.getProducts();
@@ -1097,29 +1096,51 @@ function processPlaceOrder() {
     };
   });
 
-  // 1. Save Order to History & Notifications
-  const newOrder = gkStore.addOrder({
+  // Build order object for WhatsApp message (with temp orderId)
+  const tempOrderData = {
+    orderId: 'GK-' + Date.now().toString(36).toUpperCase(),
     items: itemsFormatted,
     totals,
     address: addressObj,
-    orderNotes: notes
-  });
+    orderNotes: notes,
+    date: new Date().toLocaleDateString('en-IN'),
+    status: 'Pending'
+  };
 
-  gkStore.addNotification({
-    title: 'Order Confirmed 🎉',
-    message: `Your order #${newOrder.orderId} of ₹${newOrder.totals.total} was sent to WhatsApp.`,
-    icon: '📦'
-  });
+  // *** CRITICAL: Build WhatsApp URL and OPEN IT FIRST ***
+  // Mobile browsers BLOCK redirects if they happen after heavy synchronous work
+  // because the "user gesture" context expires. So we MUST open WhatsApp
+  // IMMEDIATELY within the click handler, BEFORE any localStorage writes.
+  const waUrl = buildWhatsAppOrderUrl(tempOrderData);
 
-  // 2. Clear Cart
-  gkStore.clearCart();
-  updateBadges();
+  // Open WhatsApp RIGHT NOW - this is the FIRST thing after validation
+  const waWindow = window.open(waUrl, '_blank');
 
-  // 3. Build WhatsApp URL
-  const waUrl = buildWhatsAppOrderUrl(newOrder);
+  // If window.open was blocked by popup blocker, try direct navigation
+  if (!waWindow || waWindow.closed || typeof waWindow.closed === 'undefined') {
+    window.location.href = waUrl;
+  }
 
-  // 4. IMMEDIATELY REDIRECT TO WHATSAPP CHAT USING MULTI-TECHNIQUE LAUNCHER!
-  launchWhatsAppUrl(waUrl);
+  // NOW do the slow stuff (localStorage writes) AFTER WhatsApp is already launching
+  setTimeout(() => {
+    gkStore.saveAddress(addressObj);
+
+    gkStore.addOrder({
+      items: itemsFormatted,
+      totals,
+      address: addressObj,
+      orderNotes: notes
+    });
+
+    gkStore.addNotification({
+      title: 'Order Confirmed 🎉',
+      message: `Your order #${tempOrderData.orderId} of ₹${tempOrderData.totals.total} was sent to WhatsApp.`,
+      icon: '📦'
+    });
+
+    gkStore.clearCart();
+    updateBadges();
+  }, 100);
 }
 
 /* 8. ORDER SUCCESS VIEW */
