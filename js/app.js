@@ -97,7 +97,7 @@ function bindGlobalEvents() {
   if (notifBtn) notifBtn.addEventListener('click', () => navigateTo('notifications'));
   if (cartBtn) cartBtn.addEventListener('click', () => navigateTo('cart'));
 
-  // Desktop Search
+  // Desktop Search Input
   const desktopSearchInput = document.getElementById('desktop-search-input');
   if (desktopSearchInput) {
     desktopSearchInput.addEventListener('keypress', (e) => {
@@ -268,8 +268,16 @@ function renderHomeView(container) {
   const bestSellers = products.filter(p => p.bestseller);
 
   container.innerHTML = `
+    <!-- Mobile Search Bar Container -->
+    <div class="search-container" style="padding: 12px 16px 0;">
+      <div class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="home-search-input" placeholder="Search for products, brands..." />
+      </div>
+    </div>
+
     <!-- Desktop PC 2-Column Grid Wrapper -->
-    <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; padding: 16px;">
       
       <!-- Main Feed Column (Left / Full on Mobile) -->
       <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 16px;">
@@ -396,6 +404,16 @@ function renderHomeView(container) {
       </div>
     </div>
   `;
+
+  // Bind Mobile Search Input
+  const searchInput = document.getElementById('home-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && searchInput.value.trim()) {
+        navigateTo('search', { query: searchInput.value.trim() });
+      }
+    });
+  }
 }
 
 /* Helper: Render Single Product Card */
@@ -521,15 +539,15 @@ function renderCategoryProductsView(container, categoryId) {
   `;
 }
 
-/* 4. SEARCH VIEW */
+/* 4. SEARCH VIEW (Reworked for Smooth Filter Engine) */
 function renderSearchView(container, query) {
   const products = gkStore.getProducts();
-  const q = (query || '').toLowerCase();
-  const results = products.filter(p => 
+  const q = (query || '').trim().toLowerCase();
+  const results = q ? products.filter(p => 
     p.name.toLowerCase().includes(q) || 
     p.brand.toLowerCase().includes(q) || 
     p.category.toLowerCase().includes(q)
-  );
+  ) : products;
 
   container.innerHTML = `
     <div style="padding: 16px;">
@@ -539,7 +557,7 @@ function renderSearchView(container, query) {
       </div>
 
       <div style="font-size: 13px; font-weight: 700; color: var(--gk-dark-muted); margin-bottom: 12px;">
-        Showing results for "${query}" (${results.length} found)
+        ${q ? `Showing results for "${query}" (${results.length} found)` : `All Products (${results.length})`}
       </div>
 
       ${results.length === 0 ? `
@@ -559,11 +577,28 @@ function renderSearchView(container, query) {
 
   const searchInput = document.getElementById('search-view-input');
   if (searchInput) {
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && searchInput.value.trim()) {
-        renderSearchView(container, searchInput.value.trim());
-      }
+    searchInput.focus();
+    searchInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      renderSearchViewResultsOnly(val);
     });
+  }
+}
+
+function renderSearchViewResultsOnly(query) {
+  const products = gkStore.getProducts();
+  const q = (query || '').trim().toLowerCase();
+  const results = q ? products.filter(p => 
+    p.name.toLowerCase().includes(q) || 
+    p.brand.toLowerCase().includes(q) || 
+    p.category.toLowerCase().includes(q)
+  ) : products;
+
+  const gridElem = document.querySelector('.products-grid');
+  if (gridElem) {
+    gridElem.innerHTML = results.length > 0 
+      ? results.map(p => renderProductCardHTML(p)).join('')
+      : `<div style="grid-column: 1/-1; text-align: center; padding: 30px;"><p style="font-weight:700;">No products found for "${query}"</p></div>`;
   }
 }
 
@@ -1140,7 +1175,7 @@ function renderOffersView(container) {
   `;
 }
 
-/* 11. NOTIFICATIONS VIEW (Mascot Empty State when array is empty) */
+/* 11. NOTIFICATIONS VIEW */
 function renderNotificationsView(container) {
   const notifs = gkStore.getNotifications();
   gkStore.markAllNotificationsRead();
