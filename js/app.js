@@ -621,7 +621,7 @@ function renderProductDetailsView(container, productId) {
   const isWishlisted = wishlist.includes(product.id);
 
   container.innerHTML = `
-    <div style="background: var(--gk-white); padding-bottom: 120px; border-radius: var(--radius-lg);">
+    <div style="background: var(--gk-white); padding-bottom: 140px; border-radius: var(--radius-lg);">
       <!-- Header Bar -->
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
         <button class="header-btn" onclick="history.back() || navigateTo('home')">‹</button>
@@ -823,7 +823,7 @@ function removeItemFromCart(productId, shade) {
   renderView('cart');
 }
 
-/* 7. CHECKOUT VIEW (With Google Maps Location Link Input) */
+/* 7. CHECKOUT VIEW (With Compulsory Google Maps Location Link Input & Mobile Form Row Fix) */
 function renderCheckoutView(container) {
   const cart = gkStore.getCart();
   const products = gkStore.getProducts();
@@ -868,7 +868,7 @@ function renderCheckoutView(container) {
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-row-2col">
           <div class="form-group">
             <label>Full Name *</label>
             <div class="input-with-icon">
@@ -903,7 +903,7 @@ function renderCheckoutView(container) {
           <input type="text" id="co-house" class="form-control" value="${address.house || ''}" placeholder="Flat no, building name" />
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-row-2col">
           <div class="form-group">
             <label>Area / Street *</label>
             <input type="text" id="co-area" class="form-control" value="${address.area || ''}" placeholder="Street, area name" />
@@ -920,23 +920,23 @@ function renderCheckoutView(container) {
         </div>
       </div>
 
-      <!-- 2.5. Google Maps Location Link (Optional Section) -->
+      <!-- 2.5. Google Maps Location Link (COMPULSORY Section) -->
       <div class="checkout-card">
         <div class="checkout-card-header">
           <div class="checkout-card-title">
             <div class="checkout-card-icon">🗺️</div>
-            <span>Google Maps Location Link (Optional)</span>
+            <span>Google Maps Location Link *</span>
           </div>
           <button class="btn btn-outline" style="width: auto; padding: 4px 12px; font-size: 11px; border-color: var(--gk-pink-primary); color: var(--gk-pink-primary);" onclick="autoDetectLocation()">📍 Detect My Location</button>
         </div>
 
         <div class="form-group">
-          <label>Location Link or Coordinates</label>
+          <label>Location Link or Coordinates (Required *)</label>
           <div class="input-with-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <input type="url" id="co-location-link" class="form-control" value="${address.locationLink || ''}" placeholder="e.g. https://maps.google.com/?q=... or tap Detect" />
+            <input type="url" id="co-location-link" class="form-control" value="${address.locationLink || ''}" placeholder="e.g. https://maps.google.com/?q=... or click Detect" />
           </div>
-          <div style="font-size: 10px; color: var(--gk-dark-muted); margin-top: 4px;">Helps our delivery agent navigate straight to your location in Shikrapur!</div>
+          <div style="font-size: 10px; color: var(--gk-pink-primary); font-weight: 700; margin-top: 4px;">* Compulsory: Click 'Detect My Location' or paste Google Maps link so delivery agent reaches your exact location in Shikrapur!</div>
         </div>
       </div>
 
@@ -1038,7 +1038,7 @@ function autoDetectLocation() {
       showToast("Location detected! 📍");
     },
     (err) => {
-      alert("Unable to detect location. Please grant location permission or paste Google Maps link manually.");
+      alert("Unable to detect location automatically. Please enable Location permissions or paste your Google Maps link manually.");
     }
   );
 }
@@ -1054,7 +1054,14 @@ function processPlaceOrder() {
   const locationLink = document.getElementById('co-location-link') ? document.getElementById('co-location-link').value.trim() : '';
 
   if (!name || !phone || !house || !area) {
-    alert("Please fill in your Name, Phone, and Address details!");
+    alert("Please fill in your Name, WhatsApp Phone Number, and Address details!");
+    return;
+  }
+
+  if (!locationLink) {
+    alert("Please provide your Google Maps location link or click 'Detect My Location' (Required)!");
+    const locInput = document.getElementById('co-location-link');
+    if (locInput) locInput.focus();
     return;
   }
 
@@ -1270,7 +1277,7 @@ function renderMyGlowkartView(container) {
         <div style="width: 80px; height: 80px; border-radius: 9999px; overflow: hidden; border: 3px solid var(--gk-pink-primary); box-shadow: var(--shadow-pink); margin-bottom: 12px; background: var(--gk-pink-soft);">
           <img src="assets/mascot_glowgirl.png" style="width: 100%; height: 100%; object-fit: cover;" alt="Glow Girl Avatar" />
         </div>
-        <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: var(--gk-dark);">My GlowKart 💕</h3>
+        <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: var(--gk-dark);">My Account 💕</h3>
         <p style="font-size: 12px; color: var(--gk-pink-primary); font-weight: 700; margin-top: 2px;">Delivering in Shikrapur, Maharashtra</p>
       </div>
 

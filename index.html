@@ -8,10 +8,10 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FF2E93">
 
-  <!-- CSS Stylesheets (Cache Busted v1.0.7) -->
-  <link rel="stylesheet" href="css/variables.css?v=1.0.7">
-  <link rel="stylesheet" href="css/main.css?v=1.0.7">
-  <link rel="stylesheet" href="css/components.css?v=1.0.7">
+  <!-- CSS Stylesheets (Cache Busted v2.0.0) -->
+  <link rel="stylesheet" href="css/variables.css?v=2.0.0">
+  <link rel="stylesheet" href="css/main.css?v=2.0.0">
+  <link rel="stylesheet" href="css/components.css?v=2.0.0">
 </head>
 <body>
 
@@ -103,7 +103,7 @@
       <a class="desktop-nav-link" onclick="navigateTo('category-products', { category: 'makeup' })">Best Sellers</a>
       <a class="desktop-nav-link" onclick="navigateTo('category-products', { category: 'new-arrivals' })">New Arrivals</a>
       <a class="desktop-nav-link" onclick="navigateTo('orders')">Orders</a>
-      <a class="desktop-nav-link" onclick="navigateTo('account')">👤 Account / My GlowKart</a>
+      <a class="desktop-nav-link" onclick="navigateTo('account')">My Account</a>
     </nav>
 
     <!-- Toast Notification Container -->
@@ -252,16 +252,21 @@
     </aside>
   </div>
 
-  <!-- JavaScript Files (Cache Busted v1.0.7) -->
-  <script src="js/data.js?v=1.0.7"></script>
-  <script src="js/store.js?v=1.0.7"></script>
-  <script src="js/whatsapp.js?v=1.0.7"></script>
-  <script src="js/app.js?v=1.0.7"></script>
+  <!-- JavaScript Files (Cache Busted v2.0.0) -->
+  <script src="js/data.js?v=2.0.0"></script>
+  <script src="js/store.js?v=2.0.0"></script>
+  <script src="js/whatsapp.js?v=2.0.0"></script>
+  <script src="js/app.js?v=2.0.0"></script>
 
-  <!-- PWA Service Worker Registration with Immediate Update -->
+  <!-- Service Worker Immediate Purge & Registration -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          for (let registration of registrations) {
+            registration.update();
+          }
+        });
         navigator.serviceWorker.register('sw.js')
           .then(reg => {
             console.log('PWA ServiceWorker registered successfully');
