@@ -7,15 +7,55 @@ let currentActiveProduct = null;
 let currentActiveShade = null;
 let currentQuantity = 1;
 let isMaintenanceMode = false;
+let deferredPwaPrompt = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   initApp();
+  initPwaListeners();
 });
 
 function initApp() {
   updateBadges();
   bindGlobalEvents();
   renderView('home');
+}
+
+/* PWA App Download Prompt Handler */
+function initPwaListeners() {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPwaPrompt = e;
+    const topBanner = document.getElementById('pwa-install-banner');
+    if (topBanner && !localStorage.getItem('gk_pwa_dismissed')) {
+      topBanner.style.display = 'flex';
+    }
+  });
+
+  const topInstallBtn = document.getElementById('pwa-install-btn-top');
+  if (topInstallBtn) {
+    topInstallBtn.addEventListener('click', triggerPwaInstall);
+  }
+}
+
+function triggerPwaInstall() {
+  if (deferredPwaPrompt) {
+    deferredPwaPrompt.prompt();
+    deferredPwaPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        showToast('Thank you for installing GlowKart App! 🎉');
+      }
+      deferredPwaPrompt = null;
+      dismissPwaBanner();
+    });
+  } else {
+    showToast('To install app: tap browser menu (⋮) → Add to Home screen 📲');
+  }
+}
+
+function dismissPwaBanner() {
+  const topBanner = document.getElementById('pwa-install-banner');
+  if (topBanner) topBanner.style.display = 'none';
+  localStorage.setItem('gk_pwa_dismissed', 'true');
 }
 
 function bindGlobalEvents() {
@@ -96,12 +136,10 @@ function updateBadges() {
   const cart = gkStore.getCart();
   const notifs = gkStore.getNotifications();
   const wishlist = gkStore.getWishlist();
-  const totals = gkStore.getCartTotal();
 
   const cartBadge = document.getElementById('cart-badge');
   const notifBadge = document.getElementById('notif-badge');
   const wishlistBadge = document.getElementById('wishlist-badge');
-  const cartTotalLabel = document.getElementById('cart-total-label');
 
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const unreadNotifsCount = notifs.filter(n => n.unread).length;
@@ -110,10 +148,6 @@ function updateBadges() {
   if (cartBadge) {
     cartBadge.textContent = cartCount;
     cartBadge.style.display = cartCount > 0 ? 'flex' : 'none';
-  }
-
-  if (cartTotalLabel) {
-    cartTotalLabel.textContent = cartCount > 0 ? `₹${totals.total}` : 'Cart';
   }
 
   if (notifBadge) {
@@ -228,7 +262,7 @@ function renderView(viewName, params = {}) {
 
 /* --- VIEW RENDERERS --- */
 
-/* 1. HOME VIEW (Responsive PC Dashboard Grid + Mobile View) */
+/* 1. HOME VIEW */
 function renderHomeView(container) {
   const products = gkStore.getProducts();
   const bestSellers = products.filter(p => p.bestseller);
@@ -240,7 +274,7 @@ function renderHomeView(container) {
       <!-- Main Feed Column (Left / Full on Mobile) -->
       <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 16px;">
         
-        <!-- Hero Offer Banner (Matching Reference Image 1) -->
+        <!-- Hero Offer Banner -->
         <div class="hero-banner" style="margin: 0;">
           <div class="hero-banner-content" style="max-width: 55%;">
             <div style="font-size: 11px; font-weight: 800; background: var(--gk-pink-soft); color: var(--gk-pink-primary); padding: 3px 10px; border-radius: var(--radius-full); display: inline-block; margin-bottom: 8px;">✨ Your Glow, Our Promise</div>
@@ -296,7 +330,7 @@ function renderHomeView(container) {
 
       </div>
 
-      <!-- Right Desktop PC Sidebar Column (Matching Image 1 Reference) -->
+      <!-- Right Desktop PC Sidebar Column -->
       <div style="width: 320px; display: flex; flex-direction: column; gap: 16px;" class="desktop-sidebar-col">
         
         <!-- Glow More, Save More! Countdown Promo Card -->
@@ -362,16 +396,6 @@ function renderHomeView(container) {
       </div>
     </div>
   `;
-
-  // Bind Search Input
-  const searchInput = document.getElementById('home-search-input');
-  if (searchInput) {
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && searchInput.value.trim()) {
-        navigateTo('search', { query: searchInput.value.trim() });
-      }
-    });
-  }
 }
 
 /* Helper: Render Single Product Card */
@@ -984,6 +1008,13 @@ function processPlaceOrder() {
     orderNotes: notes
   });
 
+  // Create real order notification!
+  gkStore.addNotification({
+    title: 'Order Confirmed 🎉',
+    message: `Your order #${newOrder.orderId} of ₹${newOrder.totals.total} was sent to WhatsApp.`,
+    icon: '📦'
+  });
+
   const waUrl = buildWhatsAppOrderUrl(newOrder);
   window.open(waUrl, '_blank');
 
@@ -1109,7 +1140,7 @@ function renderOffersView(container) {
   `;
 }
 
-/* 11. NOTIFICATIONS VIEW */
+/* 11. NOTIFICATIONS VIEW (Mascot Empty State when array is empty) */
 function renderNotificationsView(container) {
   const notifs = gkStore.getNotifications();
   gkStore.markAllNotificationsRead();
@@ -1120,23 +1151,32 @@ function renderNotificationsView(container) {
         <h2 style="font-size: 20px; font-weight: 800; margin: 0;">Notifications 🔔</h2>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        ${notifs.map(n => `
-          <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 12px; border: 1px solid var(--gk-gray-border); display: flex; gap: 12px; align-items: center;">
-            <div style="font-size: 24px; background: var(--gk-pink-soft); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">${n.icon}</div>
-            <div style="flex: 1;">
-              <div style="font-size: 13px; font-weight: 800; color: var(--gk-dark);">${n.title}</div>
-              <div style="font-size: 12px; color: var(--gk-dark-muted);">${n.message}</div>
-              <div style="font-size: 10px; color: #9CA3AF; margin-top: 2px;">${n.time}</div>
+      ${notifs.length === 0 ? `
+        <div style="text-align: center; padding: 50px 20px;">
+          <img src="assets/mascot_glowgirl.png" style="width: 110px; opacity: 0.9; margin-bottom: 16px;" />
+          <h3 style="font-size: 18px; font-weight: 800; color: var(--gk-dark);">No Notifications Yet! 🔔</h3>
+          <p style="font-size: 12px; color: var(--gk-dark-muted); margin: 6px 0 20px;">We'll notify you here when you place an order or get exclusive deals.</p>
+          <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="navigateTo('home')">Start Shopping</button>
+        </div>
+      ` : `
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          ${notifs.map(n => `
+            <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 12px; border: 1px solid var(--gk-gray-border); display: flex; gap: 12px; align-items: center;">
+              <div style="font-size: 24px; background: var(--gk-pink-soft); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">${n.icon}</div>
+              <div style="flex: 1;">
+                <div style="font-size: 13px; font-weight: 800; color: var(--gk-dark);">${n.title}</div>
+                <div style="font-size: 12px; color: var(--gk-dark-muted);">${n.message}</div>
+                <div style="font-size: 10px; color: #9CA3AF; margin-top: 2px;">${n.time}</div>
+              </div>
             </div>
-          </div>
-        `).join('')}
-      </div>
+          `).join('')}
+        </div>
+      `}
     </div>
   `;
 }
 
-/* 12. MY GLOWKART (ACCOUNT HUB) VIEW — Clean Circular Avatar & Pink Theme */
+/* 12. MY GLOWKART (ACCOUNT HUB) VIEW */
 function renderMyGlowkartView(container) {
   const address = gkStore.getSavedAddress();
   const orders = gkStore.getOrders();
@@ -1173,6 +1213,18 @@ function renderMyGlowkartView(container) {
       <!-- Info Links with Pink Theme Styling -->
       <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
         
+        <!-- PWA Download App Link -->
+        <div style="background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 100%); border-radius: var(--radius-md); padding: 14px 16px; border: 1.5px solid var(--gk-pink-light); display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="triggerPwaInstall()">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 34px; height: 34px; border-radius: var(--radius-full); background: var(--gk-pink-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px;">📲</div>
+            <div>
+              <div style="font-size: 14px; font-weight: 800; color: var(--gk-pink-primary);">Install GlowKart App</div>
+              <div style="font-size: 10px; color: var(--gk-dark-muted);">Download app on your home screen</div>
+            </div>
+          </div>
+          <span style="font-size: 12px; font-weight: 800; background: var(--gk-pink-primary); color: white; padding: 4px 12px; border-radius: var(--radius-full);">Install</span>
+        </div>
+
         <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid #F0E6EA; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition-fast);" onclick="navigateTo('orders')">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 34px; height: 34px; border-radius: var(--radius-full); background: var(--gk-pink-soft); color: var(--gk-pink-primary); display: flex; align-items: center; justify-content: center; font-size: 15px;">📦</div>
