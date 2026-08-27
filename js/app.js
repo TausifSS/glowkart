@@ -1393,7 +1393,7 @@ function renderMyGlowkartView(container) {
           <span style="font-size: 16px; color: var(--gk-pink-primary); font-weight: 800;">›</span>
         </div>
 
-        <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid #F0E6EA; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition-fast);" onclick="launchWhatsAppUrl('https://api.whatsapp.com/send?phone=919561762651')">
+        <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid #F0E6EA; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition-fast);" onclick="launchWhatsAppUrl('https://wa.me/919561762651')">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 34px; height: 34px; border-radius: var(--radius-full); background: #E6F4EA; color: #10B981; display: flex; align-items: center; justify-content: center; font-size: 15px;">🟢</div>
             <div>

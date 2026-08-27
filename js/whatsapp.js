@@ -38,7 +38,7 @@ ${order.orderNotes || 'None'}
 Please confirm my order & send UPI payment details. Thank you! 💕`;
 
   const encodedMessage = encodeURIComponent(message);
-  return `https://api.whatsapp.com/send?phone=${GLOWKART_WHATSAPP_NUMBER}&text=${encodedMessage}`;
+  return `https://wa.me/${GLOWKART_WHATSAPP_NUMBER}?text=${encodedMessage}`;
 }
 
 function buildProductRequestUrl(productQuery) {
@@ -51,12 +51,12 @@ I am looking for this beauty product:
 Could you please check if it is available for delivery in Shikrapur? Thank you!`;
 
   const encodedMessage = encodeURIComponent(message);
-  return `https://api.whatsapp.com/send?phone=${GLOWKART_WHATSAPP_NUMBER}&text=${encodedMessage}`;
+  return `https://wa.me/${GLOWKART_WHATSAPP_NUMBER}?text=${encodedMessage}`;
 }
 
 function buildSupportWhatsAppUrl() {
   const message = `Hi GlowKart Team! I need help with my beauty order in Shikrapur. 💕`;
-  return `https://api.whatsapp.com/send?phone=${GLOWKART_WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${GLOWKART_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 function launchWhatsAppUrl(url) {
