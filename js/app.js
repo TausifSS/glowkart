@@ -983,8 +983,8 @@ function renderCheckoutView(container) {
         </div>
       </div>
 
-      <!-- Primary Action Button (Directly Triggers WhatsApp Chat Navigation) -->
-      <button class="btn btn-primary" style="padding: 16px 20px; font-size: 15px; background: var(--gk-pink-gradient); box-shadow: var(--shadow-pink);" onclick="processPlaceOrder()">
+      <!-- Primary Action Button (Directly Triggers WhatsApp Chat Launch) -->
+      <button class="btn btn-primary" style="padding: 16px 20px; font-size: 15px; background: var(--gk-pink-gradient); box-shadow: var(--shadow-pink);" onclick="processPlaceOrder(); return false;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         <span>Place Order on WhatsApp</span>
       </button>
@@ -1118,8 +1118,8 @@ function processPlaceOrder() {
   // 3. Build WhatsApp URL
   const waUrl = buildWhatsAppOrderUrl(newOrder);
 
-  // 4. IMMEDIATELY REDIRECT TO WHATSAPP CHAT (DO NOT NAVIGATE TO ORDERS VIEW!)
-  window.location.href = waUrl;
+  // 4. IMMEDIATELY REDIRECT TO WHATSAPP CHAT USING MULTI-TECHNIQUE LAUNCHER!
+  launchWhatsAppUrl(waUrl);
 }
 
 /* 8. ORDER SUCCESS VIEW */
@@ -1157,7 +1157,7 @@ function renderOrderSuccessView(container, order) {
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <button class="btn btn-whatsapp" onclick="window.location.href='${waUrl}'">Chat on WhatsApp Now 💬</button>
+        <button class="btn btn-whatsapp" onclick="launchWhatsAppUrl('${waUrl}')">Chat on WhatsApp Now 💬</button>
         <button class="btn btn-outline" onclick="navigateTo('orders')">View My Orders</button>
         <button class="btn btn-secondary" onclick="navigateTo('home')">Back to Home</button>
       </div>
@@ -1197,7 +1197,7 @@ function renderOrdersView(container) {
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px solid var(--gk-gray-border); padding-top: 10px;">
                 <span style="font-size: 14px; font-weight: 800;">Total: ₹${o.totals.total}</span>
-                <button class="btn btn-whatsapp" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="window.location.href='${buildWhatsAppOrderUrl(o)}'">WhatsApp Chat 💬</button>
+                <button class="btn btn-whatsapp" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="launchWhatsAppUrl('${buildWhatsAppOrderUrl(o)}')">WhatsApp Chat 💬</button>
               </div>
             </div>
           `).join('')}
@@ -1372,7 +1372,7 @@ function renderMyGlowkartView(container) {
           <span style="font-size: 16px; color: var(--gk-pink-primary); font-weight: 800;">›</span>
         </div>
 
-        <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid #F0E6EA; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition-fast);" onclick="window.open('https://api.whatsapp.com/send?phone=919561762651', '_blank')">
+        <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid #F0E6EA; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: var(--transition-fast);" onclick="launchWhatsAppUrl('https://api.whatsapp.com/send?phone=919561762651')">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 34px; height: 34px; border-radius: var(--radius-full); background: #E6F4EA; color: #10B981; display: flex; align-items: center; justify-content: center; font-size: 15px;">🟢</div>
             <div>
@@ -1422,7 +1422,7 @@ function sendProductRequest() {
     alert("Please enter a product name!");
     return;
   }
-  window.open(buildProductRequestUrl(val), '_blank');
+  launchWhatsAppUrl(buildProductRequestUrl(val));
 }
 
 /* 14. DELIVERY INFO VIEW */
@@ -1449,7 +1449,7 @@ function renderMaintenanceView(container) {
       <img src="assets/mascot_glowgirl.png" style="width: 140px; margin-bottom: 16px;" />
       <h2 style="font-size: 22px; font-weight: 800; color: var(--gk-dark);">We're in Maintenance Break! 🛠️</h2>
       <p style="font-size: 13px; color: var(--gk-dark-muted); margin: 8px 0 20px;">We're currently making some exciting improvements to serve Shikrapur better. We'll be back very soon! 💕</p>
-      <button class="btn btn-whatsapp" style="width: auto; padding: 10px 24px;" onclick="window.open('${buildSupportWhatsAppUrl()}', '_blank')">Chat on WhatsApp</button>
+      <button class="btn btn-whatsapp" style="width: auto; padding: 10px 24px;" onclick="launchWhatsAppUrl('${buildSupportWhatsAppUrl()}')">Chat on WhatsApp</button>
     </div>
   `;
 }

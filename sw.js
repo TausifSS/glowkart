@@ -1,6 +1,6 @@
-/* GlowKart Service Worker v2.0.3 */
+/* GlowKart Service Worker v2.0.4 */
 
-const CACHE_NAME = 'glowkart-v2.0.3';
+const CACHE_NAME = 'glowkart-v2.0.4';
 const ASSETS = [
   './',
   './index.html',
