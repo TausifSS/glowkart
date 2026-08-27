@@ -17,6 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
 function initApp() {
   updateBadges();
   bindGlobalEvents();
+  
+  // Set initial state for home view
+  window.history.replaceState({ view: 'home', params: {} }, '', '');
+
+  // Handle hardware / browser back/forward buttons
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.view) {
+      navigateTo(event.state.view, event.state.params || {}, false);
+    } else {
+      navigateTo('home', {}, false);
+    }
+  });
+
   renderView('home');
 }
 
@@ -163,7 +176,7 @@ function updateBadges() {
   }
 }
 
-function navigateTo(viewName, params = {}) {
+function navigateTo(viewName, params = {}, pushHistory = true) {
   closeSidebar();
   currentView = viewName;
 
@@ -180,6 +193,10 @@ function navigateTo(viewName, params = {}) {
   document.querySelectorAll('.desktop-nav-link').forEach(link => {
     link.classList.remove('active');
   });
+
+  if (pushHistory) {
+    window.history.pushState({ view: viewName, params: params }, '', '');
+  }
 
   renderView(viewName, params);
   window.scrollTo({ top: 0, behavior: 'smooth' });
