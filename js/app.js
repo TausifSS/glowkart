@@ -12,7 +12,15 @@ let deferredPwaPrompt = null;
 document.addEventListener('DOMContentLoaded', () => {
   initApp();
   initPwaListeners();
+  hideSplashScreen();
 });
+
+function hideSplashScreen() {
+  setTimeout(() => {
+    const splash = document.getElementById('app-splash-screen');
+    if (splash) splash.classList.add('hide');
+  }, 1400);
+}
 
 function initApp() {
   updateBadges();
@@ -268,8 +276,8 @@ function renderHomeView(container) {
   const bestSellers = products.filter(p => p.bestseller);
 
   container.innerHTML = `
-    <!-- Mobile Search Bar Container -->
-    <div class="search-container" style="padding: 12px 16px 0;">
+    <!-- Mobile Search Bar Container (Matching Image 2 Reference) -->
+    <div class="search-container" style="padding: 12px 16px 4px;">
       <div class="search-box">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="home-search-input" placeholder="Search for products, brands..." />
@@ -539,7 +547,7 @@ function renderCategoryProductsView(container, categoryId) {
   `;
 }
 
-/* 4. SEARCH VIEW (Reworked for Smooth Filter Engine) */
+/* 4. SEARCH VIEW */
 function renderSearchView(container, query) {
   const products = gkStore.getProducts();
   const q = (query || '').trim().toLowerCase();
