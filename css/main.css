@@ -1,5 +1,5 @@
 /* GlowKart Global Layout & Core Styles */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap');
 @import url('./variables.css');
 
 * {
@@ -16,12 +16,41 @@ body {
   line-height: 1.5;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   overflow-x: hidden;
 }
 
-/* Mobile-first Outer Wrapper */
+/* Top Announcement Bar (PC / Desktop View) */
+.top-announcement-bar {
+  width: 100%;
+  background-color: var(--gk-pink-soft);
+  border-bottom: 1px solid var(--gk-pink-light);
+  padding: 8px 24px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gk-dark);
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-announcement-bar .announcement-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.top-announcement-bar .announcement-link {
+  color: var(--gk-pink-primary);
+  text-decoration: none;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* App Outer Container */
 .app-container {
   width: 100%;
   max-width: var(--app-max-width);
@@ -32,6 +61,21 @@ body {
   display: flex;
   flex-direction: column;
   padding-bottom: calc(var(--bottom-nav-height) + 24px);
+  transition: max-width 0.3s ease;
+}
+
+/* Responsive Desktop Container Expansion */
+@media (min-width: 768px) {
+  .top-announcement-bar {
+    display: flex;
+  }
+
+  .app-container {
+    max-width: 1240px;
+    box-shadow: none;
+    background-color: transparent;
+    padding-bottom: 40px;
+  }
 }
 
 /* Header */
@@ -48,6 +92,16 @@ body {
   justify-content: space-between;
   padding: 0 16px;
   border-bottom: 1px solid rgba(255, 182, 213, 0.3);
+}
+
+@media (min-width: 768px) {
+  .app-header {
+    height: 76px;
+    padding: 0 32px;
+    border-radius: var(--radius-lg);
+    margin-top: 12px;
+    box-shadow: var(--shadow-sm);
+  }
 }
 
 .header-btn {
@@ -69,8 +123,21 @@ body {
   transform: scale(0.95);
 }
 
+.header-btn-label {
+  display: none;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+@media (min-width: 768px) {
+  .header-btn-label {
+    display: inline;
+  }
+}
+
 .header-logo {
-  height: 38px;
+  height: 42px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -85,7 +152,7 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
 }
 
 .badge-dot {
@@ -107,6 +174,45 @@ body {
   box-shadow: 0 2px 6px rgba(255, 46, 147, 0.3);
 }
 
+/* Desktop Header Navigation Row (Matching Image 1 Reference) */
+.desktop-nav-row {
+  display: none;
+  background-color: var(--gk-white);
+  border-radius: var(--radius-full);
+  margin: 12px 0 20px;
+  padding: 6px 32px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 182, 213, 0.4);
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .desktop-nav-row {
+    display: flex;
+  }
+}
+
+.desktop-nav-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gk-dark);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.desktop-nav-link:hover, .desktop-nav-link.active {
+  color: var(--gk-pink-primary);
+  background-color: var(--gk-pink-soft);
+}
+
 /* View Content Container */
 .view-content {
   flex: 1;
@@ -114,7 +220,7 @@ body {
   flex-direction: column;
 }
 
-/* Floating Rounded Pill Bottom Navigation Bar (Matching Image Reference 2) */
+/* Floating Rounded Pill Bottom Navigation Bar (Mobile View) */
 .bottom-nav {
   position: fixed;
   bottom: 14px;
@@ -132,6 +238,12 @@ body {
   z-index: 1000;
   padding: 0 12px;
   border: 1.5px solid rgba(255, 182, 213, 0.5);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none; /* Hide bottom navbar on Desktop */
+  }
 }
 
 .nav-item {
@@ -178,7 +290,7 @@ body {
   border-radius: 3px;
 }
 
-/* Sidebar Drawer Overlay — Rich Pink Theme (Matching Image Reference 1) */
+/* Sidebar Drawer Overlay */
 .drawer-backdrop {
   position: fixed;
   inset: 0;

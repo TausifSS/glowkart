@@ -13,7 +13,25 @@
 </head>
 <body>
 
-  <!-- Outer Centered Mobile Shell -->
+  <!-- Top Announcement Bar (PC / Desktop View) -->
+  <div class="top-announcement-bar">
+    <div class="announcement-item">
+      <span>📍</span>
+      <span>Delivering only in <strong>Shikrapur, Maharashtra</strong></span>
+    </div>
+
+    <div style="display: flex; gap: 20px;">
+      <div class="announcement-item">💖 100% Original Products</div>
+      <div class="announcement-item">🛵 Fast Delivery in Shikrapur</div>
+      <div class="announcement-item">🎁 Exciting Offers</div>
+    </div>
+
+    <a href="https://wa.me/919561762651" target="_blank" class="announcement-link">
+      <span>💬 Need Help? Chat on WhatsApp</span>
+    </a>
+  </div>
+
+  <!-- Outer Container (Responsive Mobile / Desktop) -->
   <div class="app-container">
 
     <!-- App Header -->
@@ -26,26 +44,47 @@
         <img src="assets/logo.png" alt="GlowKart — Beauty Delivered to Shikrapur">
       </div>
 
-      <div class="header-actions">
-        <!-- Wishlist Icon in Header -->
-        <button class="header-btn" id="wishlist-btn" aria-label="Wishlist">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          <span class="badge-dot" id="wishlist-badge" style="display: none;">0</span>
-        </button>
+      <!-- Desktop Center Search Box -->
+      <div class="search-box desktop-search-box" style="flex: 1; max-width: 460px; margin: 0 20px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="desktop-search-input" placeholder="Search for products, brands..." />
+        <button style="background: var(--gk-pink-primary); border: none; color: white; width: 32px; height: 32px; border-radius: var(--radius-full); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" onclick="triggerDesktopSearch()">🔍</button>
+      </div>
 
+      <div class="header-actions">
         <!-- Notifications Icon -->
         <button class="header-btn" id="notif-btn" aria-label="Notifications">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="badge-dot" id="notif-badge" style="display: none;">0</span>
+          <span class="header-btn-label">Notifications</span>
+        </button>
+
+        <!-- Wishlist Icon -->
+        <button class="header-btn" id="wishlist-btn" aria-label="Wishlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="badge-dot" id="wishlist-badge" style="display: none;">0</span>
+          <span class="header-btn-label">Wishlist</span>
         </button>
 
         <!-- Cart Icon -->
         <button class="header-btn" id="cart-btn" aria-label="Cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span class="badge-dot" id="cart-badge" style="display: none;">0</span>
+          <span class="header-btn-label" id="cart-total-label">Cart</span>
         </button>
       </div>
     </header>
+
+    <!-- Desktop Header Navigation Row (Matching Image 1 Reference) -->
+    <nav class="desktop-nav-row">
+      <a class="desktop-nav-link active" onclick="navigateTo('home')">Home</a>
+      <a class="desktop-nav-link" onclick="navigateTo('categories')">Categories ˅</a>
+      <a class="desktop-nav-link" onclick="navigateTo('offers')">Offers</a>
+      <a class="desktop-nav-link" onclick="navigateTo('category-products', { category: 'makeup' })">Best Sellers</a>
+      <a class="desktop-nav-link" onclick="navigateTo('category-products', { category: 'new-arrivals' })">New Arrivals</a>
+      <a class="desktop-nav-link" onclick="navigateTo('orders')">Orders</a>
+      <a class="desktop-nav-link" onclick="navigateTo('account')">My GlowKart</a>
+    </nav>
 
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toast-container"></div>
@@ -55,7 +94,7 @@
       <!-- Dynamic Views Rendered Here -->
     </main>
 
-    <!-- Floating Rounded Pill Bottom Navigation Bar -->
+    <!-- Floating Rounded Pill Bottom Navigation Bar (Mobile View) -->
     <nav class="bottom-nav">
       <button class="nav-item active" data-view="home">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -85,7 +124,7 @@
 
   </div>
 
-  <!-- Sliding Sidebar Drawer Modal — Pure Pink Theme -->
+  <!-- Sliding Sidebar Drawer Modal -->
   <div class="drawer-backdrop" id="drawer-backdrop">
     <aside class="sidebar-drawer">
       <div class="drawer-header">
@@ -107,7 +146,6 @@
           </div>
         </button>
 
-        <!-- Shop by Category with Collapsible Submenu -->
         <button class="drawer-item" id="sidebar-cat-toggle">
           <div class="drawer-item-left">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -116,7 +154,6 @@
           <span id="sidebar-cat-arrow" style="transition: transform 0.2s ease;">›</span>
         </button>
 
-        <!-- Subcategories -->
         <div class="drawer-subnav" id="sidebar-subnav">
           <a href="#" class="drawer-subitem" onclick="navigateTo('category-products', { category: 'makeup' }); return false;">Makeup</a>
           <a href="#" class="drawer-subitem" onclick="navigateTo('category-products', { category: 'skincare' }); return false;">Skincare</a>
@@ -169,7 +206,7 @@
           </div>
         </button>
 
-        <button class="drawer-item" onclick="window.open('https://wa.me/919876543210', '_blank')">
+        <button class="drawer-item" onclick="window.open('https://wa.me/919561762651', '_blank')">
           <div class="drawer-item-left">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             <span>WhatsApp Support</span>

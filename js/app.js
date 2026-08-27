@@ -57,6 +57,16 @@ function bindGlobalEvents() {
   if (notifBtn) notifBtn.addEventListener('click', () => navigateTo('notifications'));
   if (cartBtn) cartBtn.addEventListener('click', () => navigateTo('cart'));
 
+  // Desktop Search
+  const desktopSearchInput = document.getElementById('desktop-search-input');
+  if (desktopSearchInput) {
+    desktopSearchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && desktopSearchInput.value.trim()) {
+        navigateTo('search', { query: desktopSearchInput.value.trim() });
+      }
+    });
+  }
+
   // Bottom Nav Items
   const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
   navButtons.forEach(btn => {
@@ -65,6 +75,13 @@ function bindGlobalEvents() {
       navigateTo(viewTarget);
     });
   });
+}
+
+function triggerDesktopSearch() {
+  const input = document.getElementById('desktop-search-input');
+  if (input && input.value.trim()) {
+    navigateTo('search', { query: input.value.trim() });
+  }
 }
 
 function openSidebar() {
@@ -79,10 +96,12 @@ function updateBadges() {
   const cart = gkStore.getCart();
   const notifs = gkStore.getNotifications();
   const wishlist = gkStore.getWishlist();
+  const totals = gkStore.getCartTotal();
 
   const cartBadge = document.getElementById('cart-badge');
   const notifBadge = document.getElementById('notif-badge');
   const wishlistBadge = document.getElementById('wishlist-badge');
+  const cartTotalLabel = document.getElementById('cart-total-label');
 
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const unreadNotifsCount = notifs.filter(n => n.unread).length;
@@ -91,6 +110,10 @@ function updateBadges() {
   if (cartBadge) {
     cartBadge.textContent = cartCount;
     cartBadge.style.display = cartCount > 0 ? 'flex' : 'none';
+  }
+
+  if (cartTotalLabel) {
+    cartTotalLabel.textContent = cartCount > 0 ? `₹${totals.total}` : 'Cart';
   }
 
   if (notifBadge) {
@@ -115,6 +138,11 @@ function navigateTo(viewName, params = {}) {
     } else {
       btn.classList.remove('active');
     }
+  });
+
+  // Update Desktop Nav Active
+  document.querySelectorAll('.desktop-nav-link').forEach(link => {
+    link.classList.remove('active');
   });
 
   renderView(viewName, params);
@@ -200,79 +228,131 @@ function renderView(viewName, params = {}) {
 
 /* --- VIEW RENDERERS --- */
 
-/* 1. HOME VIEW */
+/* 1. HOME VIEW (Responsive PC Dashboard Grid + Mobile View) */
 function renderHomeView(container) {
   const products = gkStore.getProducts();
   const bestSellers = products.filter(p => p.bestseller);
 
   container.innerHTML = `
-    <!-- Search Bar -->
-    <div class="search-container">
-      <div class="search-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="home-search-input" placeholder="Search for products, brands..." />
-      </div>
-    </div>
-
-    <!-- Hero Offer Banner -->
-    <div class="hero-banner">
-      <div class="hero-banner-content">
-        <div class="hero-banner-subtitle">Your Glow</div>
-        <div class="hero-banner-title">Our Promise 💕</div>
-        <div class="hero-banner-desc">100% Original Products • Fast Local Delivery in Shikrapur</div>
-        <a href="#" class="hero-banner-btn" onclick="navigateTo('categories'); return false;">Shop Now →</a>
-      </div>
-      <img src="assets/mascot_glowgirl.png" class="hero-banner-img" alt="Glow Girl Mascot" />
-    </div>
-
-    <!-- Category Shortcuts -->
-    <div class="categories-scroll">
-      ${INITIAL_CATEGORIES.map(cat => `
-        <div class="category-circle-item" onclick="navigateTo('category-products', { category: '${cat.id}' })">
-          <div class="category-circle-icon">${cat.icon}</div>
-          <div class="category-circle-name">${cat.name}</div>
+    <!-- Desktop PC 2-Column Grid Wrapper -->
+    <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+      
+      <!-- Main Feed Column (Left / Full on Mobile) -->
+      <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 16px;">
+        
+        <!-- Hero Offer Banner (Matching Reference Image 1) -->
+        <div class="hero-banner" style="margin: 0;">
+          <div class="hero-banner-content" style="max-width: 55%;">
+            <div style="font-size: 11px; font-weight: 800; background: var(--gk-pink-soft); color: var(--gk-pink-primary); padding: 3px 10px; border-radius: var(--radius-full); display: inline-block; margin-bottom: 8px;">✨ Your Glow, Our Promise</div>
+            <div class="hero-banner-title" style="font-size: 24px; font-weight: 800;">Beauty that shines,<br>Confidence that stays! 💕</div>
+            <div class="hero-banner-desc">100% Original Products • Fast Delivery in Shikrapur • Exciting Offers</div>
+            <a href="#" class="hero-banner-btn" onclick="navigateTo('categories'); return false;">Shop Now →</a>
+          </div>
+          <img src="assets/mascot_glowgirl.png" class="hero-banner-img" style="width: 140px; height: auto;" alt="Glow Girl Mascot" />
         </div>
-      `).join('')}
-    </div>
 
-    <!-- Trust Badges Row -->
-    <div class="trust-cards-row">
-      <div class="trust-card">
-        <div class="trust-card-icon">🛵</div>
-        <div class="trust-card-text">Fast Delivery<br><span style="color:var(--gk-pink-primary);">In Shikrapur</span></div>
-      </div>
-      <div class="trust-card">
-        <div class="trust-card-icon">🛡️</div>
-        <div class="trust-card-text">100% Original<br><span style="color:var(--gk-dark-muted);">Products</span></div>
-      </div>
-      <div class="trust-card">
-        <div class="trust-card-icon">🎁</div>
-        <div class="trust-card-text">Exciting Offers<br><span style="color:var(--gk-dark-muted);">Every Order</span></div>
-      </div>
-    </div>
+        <!-- Category Shortcuts -->
+        <div style="background: var(--gk-white); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--gk-pink-light); box-shadow: var(--shadow-sm);">
+          <div class="section-header" style="padding: 0 0 12px 0;">
+            <div class="section-title" style="font-size: 16px;">Shop by Category ✨</div>
+            <a href="#" class="section-link" onclick="navigateTo('categories'); return false;">View All Categories →</a>
+          </div>
+          <div class="categories-scroll" style="padding: 0;">
+            ${INITIAL_CATEGORIES.map(cat => `
+              <div class="category-circle-item" onclick="navigateTo('category-products', { category: '${cat.id}' })">
+                <div class="category-circle-icon">${cat.icon}</div>
+                <div class="category-circle-name">${cat.name}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
 
-    <!-- Best Sellers Section -->
-    <div class="section-header">
-      <div class="section-title">Best Sellers 🔥</div>
-      <a href="#" class="section-link" onclick="navigateTo('categories'); return false;">View All ›</a>
-    </div>
+        <!-- Best Sellers Section -->
+        <div style="background: var(--gk-white); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--gk-pink-light); box-shadow: var(--shadow-sm);">
+          <div class="section-header" style="padding: 0 0 12px 0;">
+            <div class="section-title" style="font-size: 16px;">Best Sellers 🔥</div>
+            <a href="#" class="section-link" onclick="navigateTo('categories'); return false;">View All Best Sellers →</a>
+          </div>
+          <div class="products-scroll" style="padding: 0;">
+            ${bestSellers.map(p => renderProductCardHTML(p)).join('')}
+          </div>
+        </div>
 
-    <div class="products-scroll">
-      ${bestSellers.map(p => renderProductCardHTML(p)).join('')}
-    </div>
+        <!-- Trust Badges Row -->
+        <div class="trust-cards-row" style="padding: 0;">
+          <div class="trust-card">
+            <div class="trust-card-icon">🛵</div>
+            <div class="trust-card-text">Fast Delivery<br><span style="color:var(--gk-pink-primary);">In Shikrapur</span></div>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-icon">🛡️</div>
+            <div class="trust-card-text">100% Original<br><span style="color:var(--gk-dark-muted);">Products</span></div>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-icon">🎁</div>
+            <div class="trust-card-text">Exciting Offers<br><span style="color:var(--gk-dark-muted);">Every Order</span></div>
+          </div>
+        </div>
 
-    <!-- Glow Girl Mascot Promotional Banner -->
-    <div class="mascot-banner">
-      <img src="assets/mascot_glowgirl.png" class="mascot-banner-img" alt="Glow Girl" />
-      <div class="mascot-banner-text">
-        <h4>Glow More, Save More! ✨</h4>
-        <p>Get up to <strong>30% OFF</strong> on selected beauty & skincare products.</p>
-        <button class="btn btn-primary" style="padding: 6px 14px; font-size: 11px; width: auto;" onclick="navigateTo('offers')">Explore Offers</button>
       </div>
+
+      <!-- Right Desktop PC Sidebar Column (Matching Image 1 Reference) -->
+      <div style="width: 320px; display: flex; flex-direction: column; gap: 16px;" class="desktop-sidebar-col">
+        
+        <!-- Glow More, Save More! Countdown Promo Card -->
+        <div style="background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 100%); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--gk-pink-light); box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <div style="font-size: 14px; font-weight: 800; color: var(--gk-dark);">Glow More, Save More! 😍</div>
+            <div style="font-size: 10px; font-weight: 800; background: var(--gk-white); color: var(--gk-pink-primary); padding: 2px 8px; border-radius: var(--radius-full); border: 1px solid var(--gk-pink-light);">⏰ Ends in 02:18:45</div>
+          </div>
+          
+          <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 14px; border: 1.5px dashed var(--gk-pink-primary); text-align: center;">
+            <div style="font-size: 18px; font-weight: 800; color: var(--gk-pink-primary);">Flat 20% OFF</div>
+            <div style="font-size: 11px; color: var(--gk-dark-muted); margin: 2px 0 10px;">on Skincare & Cosmetics Products</div>
+            <button class="btn btn-primary" style="padding: 8px; font-size: 12px;" onclick="navigateTo('offers')">Shop Offers Now</button>
+          </div>
+        </div>
+
+        <!-- Latest Offers Panel -->
+        <div style="background: var(--gk-white); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--gk-pink-light); box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <div style="font-size: 14px; font-weight: 800; color: var(--gk-dark);">Latest Offers 🎁</div>
+            <a href="#" style="font-size: 11px; font-weight: 700; color: var(--gk-pink-primary); text-decoration: none;" onclick="navigateTo('offers'); return false;">View All Offers →</a>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px; background: var(--gk-pink-soft); border-radius: var(--radius-sm);">
+              <div>
+                <div style="font-size: 12px; font-weight: 800;">Flat 25% OFF</div>
+                <div style="font-size: 10px; color: var(--gk-dark-muted);">On all Makeup Products</div>
+              </div>
+              <span style="font-size: 10px; font-weight: 800; background: var(--gk-white); color: var(--gk-pink-primary); padding: 2px 8px; border-radius: 4px; border: 1px dashed var(--gk-pink-primary);">MAKEUP25</span>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px; background: var(--gk-pink-soft); border-radius: var(--radius-sm);">
+              <div>
+                <div style="font-size: 12px; font-weight: 800;">Flat ₹100 OFF</div>
+                <div style="font-size: 10px; color: var(--gk-dark-muted);">On orders above ₹699</div>
+              </div>
+              <span style="font-size: 10px; font-weight: 800; background: var(--gk-white); color: var(--gk-pink-primary); padding: 2px 8px; border-radius: 4px; border: 1px dashed var(--gk-pink-primary);">GLOW100</span>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px; background: var(--gk-pink-soft); border-radius: var(--radius-sm);">
+              <div>
+                <div style="font-size: 12px; font-weight: 800;">Free Gift</div>
+                <div style="font-size: 10px; color: var(--gk-dark-muted);">On orders above ₹999</div>
+              </div>
+              <span style="font-size: 10px; font-weight: 800; background: var(--gk-white); color: var(--gk-pink-primary); padding: 2px 8px; border-radius: 4px; border: 1px dashed var(--gk-pink-primary);">FREEGIFT</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
     <!-- App Footer -->
-    <div class="app-footer">
+    <div class="app-footer" style="margin-top: 24px;">
       <div class="footer-brand">
         <img src="assets/logo.png" class="footer-logo" alt="GlowKart" />
         <p class="footer-desc">Your trusted local beauty & cosmetics store delivering happiness across Shikrapur, Maharashtra.</p>
@@ -373,7 +453,7 @@ function renderCategoriesView(container) {
       <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Categories ✨</h2>
       <p style="font-size: 12px; color: var(--gk-dark-muted); margin-bottom: 16px;">Explore our wide range of beauty products</p>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;">
         ${INITIAL_CATEGORIES.map(cat => `
           <div style="background: var(--gk-white); border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--gk-gray-border); box-shadow: var(--shadow-sm); cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; height: 130px;" onclick="navigateTo('category-products', { category: '${cat.id}' })">
             <div style="font-size: 32px;">${cat.icon}</div>
@@ -480,7 +560,7 @@ function renderProductDetailsView(container, productId) {
   const isWishlisted = wishlist.includes(product.id);
 
   container.innerHTML = `
-    <div style="background: var(--gk-white); padding-bottom: 24px;">
+    <div style="background: var(--gk-white); padding-bottom: 24px; border-radius: var(--radius-lg);">
       <!-- Header Bar -->
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
         <button class="header-btn" onclick="history.back() || navigateTo('home')">‹</button>
@@ -491,7 +571,7 @@ function renderProductDetailsView(container, productId) {
       </div>
 
       <!-- Main Image -->
-      <div style="height: 260px; background: #FAF6F8; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative;">
+      <div style="height: 280px; background: #FAF6F8; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative;">
         ${product.bestseller ? `<div class="product-badge" style="top:12px; left:12px;">BEST SELLER</div>` : ''}
         ${product.discount ? `<div class="product-badge" style="top:12px; right:12px; background: var(--gk-dark);">-${product.discount}% OFF</div>` : ''}
         <img src="${product.image}" id="pd-main-img" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
@@ -705,7 +785,7 @@ function renderCheckoutView(container) {
           <h2 style="font-size: 22px; font-weight: 800; color: var(--gk-dark); margin: 0; display: flex; align-items: center; gap: 8px;">
             Checkout <span style="background: var(--gk-pink-soft); width: 26px; height: 26px; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">🔒</span>
           </h2>
-          <div style="font-size: 12px; color: var(--gk-dark-muted); font-weight: 500; margin-top: 2px;">No Login Required — Direct WhatsApp Order</div>
+          <div style="font-size: 12px; color: var(--gk-dark-muted); font-weight: 500; margin-top: 2px;">Direct WhatsApp Order Confirmation</div>
         </div>
 
         <!-- Top Right Safe Badge -->
@@ -852,7 +932,7 @@ function renderCheckoutView(container) {
         <div>
           <div style="font-size: 16px;">🔒</div>
           <div style="font-size: 9px; font-weight: 800; color: var(--gk-dark); margin-top: 2px;">Safe & Secure</div>
-          <div style="font-size: 8px; color: var(--gk-dark-muted);">No Login Required</div>
+          <div style="font-size: 8px; color: var(--gk-dark-muted);">Fast Order</div>
         </div>
         <div>
           <div style="font-size: 16px;">🎧</div>
@@ -958,7 +1038,7 @@ function renderOrdersView(container) {
   container.innerHTML = `
     <div style="padding: 16px;">
       <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">My Orders 📦</h2>
-      <p style="font-size: 12px; color: var(--gk-dark-muted); margin-bottom: 16px;">Orders are saved on this device only</p>
+      <p style="font-size: 12px; color: var(--gk-dark-muted); margin-bottom: 16px;">Track & manage your orders</p>
 
       ${orders.length === 0 ? `
         <div style="text-align: center; padding: 40px 20px;">
@@ -1056,7 +1136,7 @@ function renderNotificationsView(container) {
   `;
 }
 
-/* 12. MY GLOWKART (ACCOUNT HUB) VIEW — Beautiful Pink Theme */
+/* 12. MY GLOWKART (ACCOUNT HUB) VIEW — Clean Circular Avatar & Pink Theme */
 function renderMyGlowkartView(container) {
   const address = gkStore.getSavedAddress();
   const orders = gkStore.getOrders();
@@ -1065,11 +1145,13 @@ function renderMyGlowkartView(container) {
 
   container.innerHTML = `
     <div style="padding: 16px;">
-      <!-- Profile Header -->
-      <div style="background: var(--gk-white); border-radius: var(--radius-lg); padding: 20px; border: 1px solid var(--gk-pink-light); text-align: center; margin-bottom: 16px; box-shadow: var(--shadow-sm);">
-        <img src="assets/mascot_glowgirl.png" style="width: 75px; margin-bottom: 8px;" />
+      <!-- Profile Header (Clean Circular Avatar Shape) -->
+      <div style="background: var(--gk-white); border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--gk-pink-light); text-align: center; margin-bottom: 16px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center;">
+        <div style="width: 80px; height: 80px; border-radius: 9999px; overflow: hidden; border: 3px solid var(--gk-pink-primary); box-shadow: var(--shadow-pink); margin-bottom: 12px; background: var(--gk-pink-soft);">
+          <img src="assets/mascot_glowgirl.png" style="width: 100%; height: 100%; object-fit: cover;" alt="Glow Girl Avatar" />
+        </div>
         <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: var(--gk-dark);">My GlowKart 💕</h3>
-        <p style="font-size: 11px; color: var(--gk-dark-muted); font-weight: 600; margin-top: 2px;">No Login • Shopping data saved on this device only</p>
+        <p style="font-size: 12px; color: var(--gk-pink-primary); font-weight: 700; margin-top: 2px;">Delivering in Shikrapur, Maharashtra</p>
       </div>
 
       <!-- Stats Grid -->

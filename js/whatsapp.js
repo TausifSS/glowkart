@@ -1,6 +1,6 @@
 /* GlowKart WhatsApp Helper & Pre-Formatter */
 
-const GLOWKART_WHATSAPP_NUMBER = "919876543210"; // Default store owner contact
+const GLOWKART_WHATSAPP_NUMBER = "919561762651"; // Direct store owner contact (+91 9561762651)
 
 function buildWhatsAppOrderUrl(order) {
   let itemsText = "";
