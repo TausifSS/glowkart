@@ -8,10 +8,10 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FF2E93">
 
-  <!-- CSS Stylesheets -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/components.css">
+  <!-- CSS Stylesheets (Cache Busted v1.0.5) -->
+  <link rel="stylesheet" href="css/variables.css?v=1.0.5">
+  <link rel="stylesheet" href="css/main.css?v=1.0.5">
+  <link rel="stylesheet" href="css/components.css?v=1.0.5">
 </head>
 <body>
   
@@ -54,7 +54,7 @@
       <div class="announcement-item">🎁 Exciting Offers</div>
     </div>
 
-    <a href="https://wa.me/919561762651" target="_blank" class="announcement-link">
+    <a href="https://api.whatsapp.com/send?phone=919561762651" target="_blank" class="announcement-link">
       <span>💬 Need Help? Chat on WhatsApp</span>
     </a>
   </div>
@@ -240,7 +240,7 @@
           </div>
         </button>
 
-        <button class="drawer-item" onclick="window.open('https://wa.me/919561762651', '_blank')">
+        <button class="drawer-item" onclick="window.open('https://api.whatsapp.com/send?phone=919561762651', '_blank')">
           <div class="drawer-item-left">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             <span>WhatsApp Support</span>
@@ -258,18 +258,21 @@
     </aside>
   </div>
 
-  <!-- JavaScript Files -->
-  <script src="js/data.js"></script>
-  <script src="js/store.js"></script>
-  <script src="js/whatsapp.js"></script>
-  <script src="js/app.js"></script>
+  <!-- JavaScript Files (Cache Busted v1.0.5) -->
+  <script src="js/data.js?v=1.0.5"></script>
+  <script src="js/store.js?v=1.0.5"></script>
+  <script src="js/whatsapp.js?v=1.0.5"></script>
+  <script src="js/app.js?v=1.0.5"></script>
 
-  <!-- PWA Service Worker Registration -->
+  <!-- PWA Service Worker Registration with Immediate Update -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('PWA ServiceWorker registered successfully'))
+          .then(reg => {
+            console.log('PWA ServiceWorker registered successfully');
+            reg.update(); // Force immediate check for new Service Worker update
+          })
           .catch(err => console.log('PWA ServiceWorker registration failed:', err));
       });
     }

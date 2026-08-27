@@ -1,32 +1,31 @@
-/* GlowKart PWA Service Worker */
+/* GlowKart Service Worker v1.0.5 */
 
-const CACHE_NAME = 'glowkart-cache-v1';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'glowkart-v1.0.5';
+const ASSETS = [
   './',
   './index.html',
   './admin.html',
-  './manifest.json',
   './css/variables.css',
   './css/main.css',
   './css/components.css',
-  './css/admin.css',
   './js/data.js',
   './js/store.js',
   './js/whatsapp.js',
   './js/app.js',
   './js/admin.js',
+  './manifest.json',
   './assets/logo.png',
   './assets/logo_badge.png',
+  './assets/splash_logo.png',
   './assets/mascot_glowgirl.png'
 ];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+      return cache.addAll(ASSETS);
+    }).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
@@ -39,15 +38,12 @@ self.addEventListener('activate', (e) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then((response) => {
-      return response || fetch(e.request);
-    })
+    fetch(e.request).catch(() => caches.match(e.request))
   );
 });

@@ -1058,10 +1058,18 @@ function processPlaceOrder() {
     icon: '📦'
   });
 
-  const waUrl = buildWhatsAppOrderUrl(newOrder);
-  window.open(waUrl, '_blank');
+  // Clear cart
+  gkStore.clearCart();
 
+  const waUrl = buildWhatsAppOrderUrl(newOrder);
+
+  // Navigate to Order Success View
   navigateTo('order-success', { order: newOrder });
+
+  // Direct 100% reliable WhatsApp Redirection
+  setTimeout(() => {
+    window.location.href = waUrl;
+  }, 400);
 }
 
 /* 8. ORDER SUCCESS VIEW */
@@ -1070,6 +1078,8 @@ function renderOrderSuccessView(container, order) {
     navigateTo('home');
     return;
   }
+
+  const waUrl = buildWhatsAppOrderUrl(order);
 
   container.innerHTML = `
     <div style="text-align: center; padding: 32px 16px;">
@@ -1097,7 +1107,7 @@ function renderOrderSuccessView(container, order) {
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <button class="btn btn-whatsapp" onclick="window.open('${buildWhatsAppOrderUrl(order)}', '_blank')">Chat on WhatsApp Now 💬</button>
+        <button class="btn btn-whatsapp" onclick="window.location.href='${waUrl}'">Chat on WhatsApp Now 💬</button>
         <button class="btn btn-outline" onclick="navigateTo('orders')">View My Orders</button>
         <button class="btn btn-secondary" onclick="navigateTo('home')">Back to Home</button>
       </div>
@@ -1137,7 +1147,7 @@ function renderOrdersView(container) {
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px solid var(--gk-gray-border); padding-top: 10px;">
                 <span style="font-size: 14px; font-weight: 800;">Total: ₹${o.totals.total}</span>
-                <button class="btn btn-whatsapp" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="window.open('${buildWhatsAppOrderUrl(o)}', '_blank')">WhatsApp Chat</button>
+                <button class="btn btn-whatsapp" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="window.location.href='${buildWhatsAppOrderUrl(o)}'">WhatsApp Chat</button>
               </div>
             </div>
           `).join('')}
