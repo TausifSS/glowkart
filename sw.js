@@ -1,6 +1,6 @@
-/* GlowKart Service Worker v2.0.0 */
+/* GlowKart Service Worker v2.0.1 */
 
-const CACHE_NAME = 'glowkart-v2.0.0';
+const CACHE_NAME = 'glowkart-v2.0.1';
 const ASSETS = [
   './',
   './index.html',
@@ -33,7 +33,9 @@ self.addEventListener('activate', (e) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          return caches.delete(key); // Force delete all previous caches
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
         })
       );
     }).then(() => self.clients.claim())
